@@ -4,12 +4,31 @@ import "./App.css";
 function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginStatus, setLoginStatus] = useState(null);
 
-  const handleSubmit = (event) => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("Username:", username);
     console.log("Password:", password);
-    // todo: call API to authenticate user
+    try {
+      const response = await fetch('http://localhost:8080/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setLoginStatus(`Welcome, ${data.username}!`);
+      } else {
+        setLoginStatus('Login failed: Invalid username or password');
+      }
+    } catch (error) {
+      setLoginStatus('Login failed: ' + error.message);
+    }
   };
 
   return (

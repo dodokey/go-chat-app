@@ -39,7 +39,6 @@ vendor/
 Thumbs.db
 
 # Air config and build files
-.air.toml
 .tmp/
 
 # Docker-related files
