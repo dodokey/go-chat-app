@@ -1,12 +1,13 @@
 version: '3.8'
 
 services:
-  app:
+  api:
+    container_name: myapi
     build:
-      context: .
+      context: ./api
       dockerfile: Dockerfile
     volumes:
-      - .:/app
+      - ./api:/app
       - /app/vendor
     ports:
       - "8080:8080"
@@ -15,9 +16,24 @@ services:
     environment:
       - GO_ENV=development
       - AIR_GO_FLAGS=-mod=vendor
-    command: air
+
+  web:
+    container_name: myweb
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    volumes:
+      - ./web:/web
+      - /web/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    environment:
+      - CHOKIDAR_USEPOLLING=true
 
   redis:
+    container_name: myredis
     image: redis:alpine
     ports:
       - "6379:6379"
