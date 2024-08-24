@@ -1,0 +1,53 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary, build output
+*.test
+*.out
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.coverprofile
+
+# Logs
+*.log
+
+# Temporary and build files
+tmp/
+*.tmp
+*.temp
+
+# Vendor directory for Go modules
+vendor/
+
+# Go workspace file
+go.work
+
+# Dependency directories
+Godeps/
+vendor/
+
+# IDE and Editor settings
+.idea/
+.vscode/
+*.swp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Air config and build files
+.air.toml
+.tmp/
+
+# Docker-related files
+docker-compose.override.yml
+docker-compose.yml
+Dockerfile
+.env
+
+# Build artifacts
+cmd/api/app
+cmd/api/tmp/

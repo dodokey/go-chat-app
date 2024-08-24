@@ -2,7 +2,7 @@
 FROM golang:1.20-alpine
 
 # 設置工作目錄
-WORKDIR /app
+WORKDIR /app/cmd/api
 
 # 安裝 Air 用於 hot reload
 RUN go install github.com/cosmtrek/air@v1.28.0
