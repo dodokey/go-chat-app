@@ -38,7 +38,3 @@ build/
 
 # macOS files
 .DS_Store
-
-# Docker files
-Dockerfile
-docker-compose.yml

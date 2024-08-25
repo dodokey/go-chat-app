@@ -41,10 +41,6 @@ Thumbs.db
 # Air config and build files
 .tmp/
 
-# Docker-related files
-docker-compose.override.yml
-docker-compose.yml
-Dockerfile
 .env
 
 # Build artifacts
