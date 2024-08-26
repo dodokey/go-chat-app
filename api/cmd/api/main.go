@@ -10,7 +10,9 @@ import (
 )
 
 func main() {
-    router := gin.Default()
+	router := gin.New()
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
 	router.Use(httphandler.CORSMiddleware())
 
     if err := router.SetTrustedProxies([]string{"127.0.0.1"}); err != nil {
@@ -33,7 +35,6 @@ func main() {
 		return result, nil
 	}))
 
-	log.Println("Starting server on :8080")
 	if err := router.Run(":8080"); err != nil {
 		log.Fatalf("could not start server: %s", err)
 	}
