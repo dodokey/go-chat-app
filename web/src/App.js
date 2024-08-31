@@ -1,67 +1,47 @@
-import React, { useState } from "react";
-import "./App.css";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import Login from "./components/Login/Login";
+import Chat from "./components/Chat/Chat";
+import "./styles/App.css";
 
 function App() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginStatus, setLoginStatus] = useState(null);
-
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log("Username:", username);
-    console.log("Password:", password);
-    try {
-      const response = await fetch('http://localhost:8080/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setLoginStatus(`Welcome, ${data.username}!`);
-      } else {
-        setLoginStatus('Login failed: Invalid username or password');
-      }
-    } catch (error) {
-      setLoginStatus('Login failed: ' + error.message);
-    }
-  };
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Login</h1>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>
-              Username:
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Password:
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </label>
-          </div>
-          <div>
-            <button type="submit">Login</button>
-          </div>
-        </form>
-      </header>
-    </div>
+    <AuthProvider>
+      <Router>
+        <AppRoutes />
+      </Router>
+    </AuthProvider>
+  );
+}
+
+function AppRoutes() {
+  const { user } = useAuth();
+  return (
+    <Routes>
+      <Route
+        path="/login"
+        element={user ? <Navigate to="/chat" replace /> : <Login />}
+      />
+      <Route
+        path="/chat"
+        element={
+          <ProtectedRoute>
+            <Chat />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/"
+        element={<Navigate to={user ? "/chat" : "/login"} replace />}
+      />
+    </Routes>
   );
 }
 
