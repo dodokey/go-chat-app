@@ -26,13 +26,7 @@ func main() {
 		if err := c.ShouldBindJSON(&input); err != nil {
 			return nil, err
 		}
-
-		result, err := usecase.Userlogin(input)
-		if err != nil {
-			return nil, err
-		}
-
-		return result, nil
+		return usecase.Userlogin(input)
 	}))
 
 	if err := router.Run(":8080"); err != nil {

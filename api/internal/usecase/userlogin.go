@@ -1,10 +1,13 @@
 package usecase
 
 import (
+	"time"
+
 	"github.com/dodokey/go-chat-app/internal/application"
 	"github.com/dodokey/go-chat-app/internal/infrastructure"
 	"github.com/dodokey/go-chat-app/internal/interfaces"
 	"github.com/go-redis/redis/v8"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type UserLoginInput struct {
@@ -13,9 +16,8 @@ type UserLoginInput struct {
 }
 
 type UserLoginOutput struct {
-    Token string
-    Result interfaces.LoginResult
-    Error error
+    Data interfaces.LoginResult `json:"data"`
+    Error error `json:"error"`
 }
 
 func Userlogin(input UserLoginInput) (UserLoginOutput, error) {
@@ -24,7 +26,38 @@ func Userlogin(input UserLoginInput) (UserLoginOutput, error) {
     userService := application.NewUserService(userRepo)
     userHandler := interfaces.NewUserHandler(userService)
 
-    // Call the Login function with the correct arguments
     result, err := userHandler.Login(input.Username, input.Password)
-    return UserLoginOutput{Token: "token1", Result: result , Error: err}, nil
+    if(err != nil) {
+		return UserLoginOutput{}, err
+    }
+    token, err := GenerateJWT(input.Username)
+    result.Token = token
+    return UserLoginOutput{Data: result , Error: err}, nil
+}
+
+
+var jwtKey = []byte("secret_key_5566")
+
+type Claims struct {
+	Username string `json:"username"`
+	jwt.RegisteredClaims
+}
+
+func GenerateJWT(username string) (string, error) {
+	expirationTime := time.Now().Add(24 * time.Hour)
+	claims := &Claims{
+		Username: username,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(jwtKey)
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
 }

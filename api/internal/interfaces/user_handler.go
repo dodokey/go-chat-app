@@ -21,14 +21,10 @@ func NewUserHandler(service *application.UserService) *UserHandler {
 func (h *UserHandler) Login(username, password string) (LoginResult, error) {
     _, err := h.service.Login(username, password)
     if err != nil {
-        return LoginResult{
-            Success: false,
-            Message: err.Error(),
-        }, nil
+        return LoginResult{}, err
     }
     return LoginResult{
         Success: true,
         Message: "Login successful",
-        Token:   "token",
-    },nil
+    }, nil
 }
